@@ -4,6 +4,10 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelector("#getData").addEventListener("click", getData);
 });
 
+function checkFound(){
+
+}
+
 const status = (response) => {
     if (response.status >= 200 && response.status < 300) {
         return Promise.resolve(response)
