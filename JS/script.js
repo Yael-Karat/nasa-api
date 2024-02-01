@@ -5,7 +5,10 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function checkFound(){
-
+    /**
+     * if found show the images with them details
+     * if not found show error message that the images not found
+     */
 }
 
 const status = (response) => {
