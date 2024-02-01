@@ -1,7 +1,7 @@
 const API_KEY = "8DWkvDy8fbVdx7mQKq8AqHKCCUc7bqnFHGY92v1s"
 
 document.addEventListener('DOMContentLoaded', function () {
-    document.querySelector("#getdata").addEventListener("click", getData);
+    document.querySelector("#getData").addEventListener("click", getData);
 });
 
 const status = (response) => {
