@@ -114,13 +114,13 @@ document.addEventListener('DOMContentLoaded', function () {
             // Create save button
             const saveButton = document.createElement("button");
             saveButton.textContent = "Save";
-            saveButton.className = "btn btn-primary btn-sm";
+            saveButton.className = "btn btn-info btn-sm";
             saveButton.addEventListener("click", () => saveImage(photos[index]));
 
             // Create full-size button
             const fullSizeButton = document.createElement("button");
             fullSizeButton.textContent = "Full Size";
-            fullSizeButton.className = "btn btn-secondary btn-sm ms-2";
+            fullSizeButton.className = "btn btn-primary btn-sm ms-2";
             fullSizeButton.addEventListener("click", () => openFullSize(photos[index].img_src));
 
             // Append elements to photo container
