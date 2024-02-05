@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     const API_KEY = "8DWkvDy8fbVdx7mQKq8AqHKCCUc7bqnFHGY92v1s";
     const baseUrl = "https://api.nasa.gov/mars-photos/api/v1/";
+    const MAX_IMAGES = 15;
 
     // Fetch rovers data on page load
     fetchRoversData();
@@ -77,7 +78,11 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        photos.forEach(photo => {
+        // Limit the number of images to display to 15
+        const maxImages = MAX_IMAGES;
+        const imagesToDisplay = photos.slice(0, maxImages);
+
+        imagesToDisplay.forEach(photo => {
             const img = document.createElement("img");
             img.src = photo.img_src;
             img.alt = "Mars Rover Image";
@@ -85,6 +90,7 @@ document.addEventListener('DOMContentLoaded', function () {
             searchResults.appendChild(img);
         });
     }
+
 
     function resetForm() {
         document.getElementById("selectDateFormat").value = "Earth Date";
