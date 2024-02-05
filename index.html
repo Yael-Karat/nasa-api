@@ -73,10 +73,17 @@
             </select>
         </div>
 
-        <div class="mb-3">
+        <div class="mb-3" id="regularDateBox">
             <label for="inputDate" class="form-label">Date:</label>
             <input type="date" class="form-control" id="inputDate" required>
             <div class="invalid-feedback">Please enter a valid date.</div>
+        </div>
+
+        <!-- SOL date input field (hidden by default) -->
+        <div class="mb-3" id="solDateBox" style="display: none;">
+            <label for="inputSolDate" class="form-label">Sol:</label>
+            <input type="number" class="form-control" id="inputSolDate" min="0" max="4074">
+            <div class="invalid-feedback">Please enter a valid Sol date.</div>
         </div>
 
         <div class="mb-3">
