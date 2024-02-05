@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const baseUrl = "https://api.nasa.gov/mars-photos/api/v1/";
     const MAX_IMAGES = 15;
 
+    resetSite();
+
     // Fetch rovers data on page load
     fetchRoversData();
 
@@ -22,6 +24,14 @@ document.addEventListener('DOMContentLoaded', function () {
     // Event listeners for search button and reset button
     document.getElementById("getData").addEventListener("click", searchData);
     document.getElementById("searchForm").addEventListener("reset", resetForm);
+
+    function resetSite() {
+        // Clear saved images from localStorage
+        localStorage.removeItem('savedImages');
+
+        // Clear error message modal
+        document.getElementById("errorMessageBody").textContent = "";
+    }
 
     function fetchRoversData() {
         fetch(baseUrl + "rovers?api_key=" + API_KEY)
@@ -135,28 +145,28 @@ document.addEventListener('DOMContentLoaded', function () {
             // Append column div to row div
             rowDiv.appendChild(colDiv);
         }
+        // Attach event listener to save buttons
+        const saveButtons = document.querySelectorAll('.save-button');
+        saveButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const index = parseInt(this.dataset.index);
+                saveImage(photos[index]);
+            });
+        });
     }
 
     function saveImage(photo) {
-        // Add photo to favorites list
-        const favoritesList = document.getElementById("savedImages").querySelector(".carousel-inner");
-
-        // Create a new carousel item for the saved image
-        const carouselItem = document.createElement("div");
-        carouselItem.className = "carousel-item";
-        carouselItem.innerHTML = `
-        <img src="${photo.img_src}" class="d-block w-100" alt="Mars Rover Image">
-        <div class="carousel-caption d-none d-md-block">
-            <p>Date: ${photo.earth_date}, Rover: ${photo.rover.name}, Camera: ${photo.camera.full_name}</p>
-        </div>
-    `;
-
-        // Add the new carousel item to the favorites list
-        favoritesList.appendChild(carouselItem);
-
-        // Activate the newly added carousel item
-        const favoritesCarousel = new bootstrap.Carousel(document.getElementById("savedImages"));
-        favoritesCarousel.to(carouselItem);
+        let savedImages = JSON.parse(localStorage.getItem('savedImages')) || [];
+        const exists = savedImages.some(img => img.img_src === photo.img_src);
+        if (exists) {
+            showError("This image has already been saved.");
+            return;
+        }
+        savedImages.push(photo);
+        localStorage.setItem('savedImages', JSON.stringify(savedImages));
+        // Display a modal confirmation message
+        const savedModal = new bootstrap.Modal(document.getElementById("savedModal"));
+        savedModal.show();
     }
 
     function openFullSize(imgSrc) {
@@ -173,8 +183,13 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById("selectRover").value = "";
         document.getElementById("selectCamera").value = "";
         document.getElementById("searchResults").innerHTML = "";
-    }
 
+        // Clear saved images from localStorage
+        localStorage.removeItem('savedImages');
+
+        // Clear error message modal
+        document.getElementById("errorMessageBody").textContent = "";
+    }
 
     function showError(message) {
         document.getElementById("errorMessageBody").textContent = message;
