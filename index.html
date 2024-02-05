@@ -13,12 +13,16 @@
             padding: 20%;
             text-align: center;
         }
+
+        .img-thumbnail {
+            height: 200px;
+        }
     </style>
-    <title>Image database from NASA</title>
+    <title>Mars Images from NASA</title>
 </head>
 <body>
 
-<div class="container-fluid text-center p-3 mb-3 bg-primary header-background">
+<div class="container-fluid text-center p-3 mb-3 header-background">
     <h1>Mars Images from the NASA</h1><br>
     <h5>Browse NASA Mars images and create a carrousel</h5>
 </div>
@@ -114,22 +118,6 @@
     </form>
     <h3>Search results:</h3>
     <div id="searchResults" class="mt-4"></div>
-</div>
-
-<!-- Favorites list -->
-<div id="favoritesList" class="container mt-5">
-    <h3>Favorites List:</h3>
-    <div id="favoritesCarousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner"></div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#favoritesCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#favoritesCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
-    </div>
 </div>
 
 <!-- Modal for error messages -->
