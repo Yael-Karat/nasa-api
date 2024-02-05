@@ -78,19 +78,91 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        // Limit the number of images to display to 15
-        const maxImages = MAX_IMAGES;
-        const imagesToDisplay = photos.slice(0, maxImages);
+        let rowDiv;
+        for (let index = 0; index < Math.min(photos.length, MAX_IMAGES); index++) {
+            // Create a new row div for every third image
+            if (index % 3 === 0) {
+                rowDiv = document.createElement("div");
+                rowDiv.className = "row mb-3";
+                searchResults.appendChild(rowDiv);
+            }
 
-        imagesToDisplay.forEach(photo => {
+            // Create a column div for each photo
+            const colDiv = document.createElement("div");
+            colDiv.className = "col-md-4";
+
+            // Create container div for each photo
+            const photoContainer = document.createElement("div");
+            photoContainer.className = "photo-container mb-3";
+
+            // Create image element
             const img = document.createElement("img");
-            img.src = photo.img_src;
+            img.src = photos[index].img_src;
             img.alt = "Mars Rover Image";
-            img.className = "img-thumbnail";
-            searchResults.appendChild(img);
-        });
+            img.className = "img-thumbnail"; // Assigning the img-thumbnail class here
+
+            // Create photo details paragraph
+            const details = document.createElement("div");
+            let dateDetails = `<p><strong>Earth Date:</strong> ${photos[index].earth_date}</p>`;
+            if (photos[index].sol) {
+                dateDetails += `<p><strong>Mars Date (Sol):</strong> ${photos[index].sol}</p>`;
+            }
+            details.innerHTML = dateDetails +
+                `<p><strong>Rover:</strong> ${photos[index].rover.name}</p>` +
+                `<p><strong>Camera:</strong> ${photos[index].camera.full_name}</p>`;
+
+            // Create save button
+            const saveButton = document.createElement("button");
+            saveButton.textContent = "Save";
+            saveButton.className = "btn btn-primary btn-sm";
+            saveButton.addEventListener("click", () => saveImage(photos[index]));
+
+            // Create full-size button
+            const fullSizeButton = document.createElement("button");
+            fullSizeButton.textContent = "Full Size";
+            fullSizeButton.className = "btn btn-secondary btn-sm ms-2";
+            fullSizeButton.addEventListener("click", () => openFullSize(photos[index].img_src));
+
+            // Append elements to photo container
+            photoContainer.appendChild(img);
+            photoContainer.appendChild(details);
+            photoContainer.appendChild(saveButton);
+            photoContainer.appendChild(fullSizeButton);
+
+            // Append photo container to column div
+            colDiv.appendChild(photoContainer);
+
+            // Append column div to row div
+            rowDiv.appendChild(colDiv);
+        }
     }
 
+    function saveImage(photo) {
+        // Add photo to favorites list
+        const favoritesList = document.getElementById("savedImages").querySelector(".carousel-inner");
+
+        // Create a new carousel item for the saved image
+        const carouselItem = document.createElement("div");
+        carouselItem.className = "carousel-item";
+        carouselItem.innerHTML = `
+        <img src="${photo.img_src}" class="d-block w-100" alt="Mars Rover Image">
+        <div class="carousel-caption d-none d-md-block">
+            <p>Date: ${photo.earth_date}, Rover: ${photo.rover.name}, Camera: ${photo.camera.full_name}</p>
+        </div>
+    `;
+
+        // Add the new carousel item to the favorites list
+        favoritesList.appendChild(carouselItem);
+
+        // Activate the newly added carousel item
+        const favoritesCarousel = new bootstrap.Carousel(document.getElementById("savedImages"));
+        favoritesCarousel.to(carouselItem);
+    }
+
+    function openFullSize(imgSrc) {
+        // Open full-size image in a new window
+        window.open(imgSrc, "_blank");
+    }
 
     function resetForm() {
         document.getElementById("selectDateFormat").value = "Earth Date";
