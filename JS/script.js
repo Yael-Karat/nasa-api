@@ -88,12 +88,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function resetForm() {
         document.getElementById("selectDateFormat").value = "Earth Date";
+        document.getElementById("regularDateBox").style.display = "block";
         document.getElementById("inputDate").value = "";
+        document.getElementById("solDateBox").style.display = "none";
         document.getElementById("inputSolDate").value = "";
         document.getElementById("selectRover").value = "";
         document.getElementById("selectCamera").value = "";
         document.getElementById("searchResults").innerHTML = "";
     }
+
 
     function showError(message) {
         document.getElementById("errorMessageBody").textContent = message;
