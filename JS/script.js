@@ -1,50 +1,111 @@
-const API_KEY = "8DWkvDy8fbVdx7mQKq8AqHKCCUc7bqnFHGY92v1s"
-
 document.addEventListener('DOMContentLoaded', function () {
-    document.querySelector("#getData").addEventListener("click", getData);
-});
+    const API_KEY = "8DWkvDy8fbVdx7mQKq8AqHKCCUc7bqnFHGY92v1s";
+    const baseUrl = "https://api.nasa.gov/mars-photos/api/v1/";
 
-function checkFound(){
-    /**
-     * if found show the images with them details
-     * if not found show error message that the images not found
-     */
-}
+    // Fetch rovers data on page load
+    fetchRoversData();
 
-const status = (response) => {
-    if (response.status >= 200 && response.status < 300) {
-        return Promise.resolve(response)
-    } else {
-        return Promise.reject(new Error(response.statusText))
-    }
-}
-
-const toggleValidation = (element, show) => {
-    if (show) {
-        element.classList.add("is-invalid");
-        element.nextElementSibling.classList.remove("d-none");
-    } else {
-        element.classList.remove("is-invalid");
-        element.nextElementSibling.classList.add("d-none");
-    }
-}
-const getData = () => {
-    const userNameElement = document.getElementById("username");
-    const dataElement = document.getElementById("data");
-    // hide validation div
-    toggleValidation(userNameElement, false)
-
-    dataElement.innerHTML = "<img src='img/loading-buffering.gif'>";
-    fetch('https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?earth_date=2015-6-3&api_key=API_KEY')
-        .then(status)
-        .then(res => res.json())
-        .then(json => {
-            dataElement.innerHTML = `User ${json.login} has ${json.followers} followers`; // remove the loading message
-        })
-        .catch(function (err) {
-            dataElement.innerHTML = 'Request failed';
-        }).finally(function () {
-        // always executed
-        userNameElement.value = "";
+    // Event listener for changing date format
+    document.getElementById('selectDateFormat').addEventListener('change', function () {
+        let regularDateBox = document.getElementById('regularDateBox');
+        let solDateBox = document.getElementById('solDateBox');
+        if (this.value === 'Mars Date (Sol)') {
+            regularDateBox.style.display = 'none';
+            solDateBox.style.display = 'block';
+        } else {
+            regularDateBox.style.display = 'block';
+            solDateBox.style.display = 'none';
+        }
     });
-}
+
+    // Event listeners for search button and reset button
+    document.getElementById("getData").addEventListener("click", searchData);
+    document.getElementById("searchForm").addEventListener("reset", resetForm);
+
+    function fetchRoversData() {
+        fetch(baseUrl + "rovers?api_key=" + API_KEY)
+            .then(response => response.json())
+            .then(data => {
+                const selectRover = document.getElementById("selectRover");
+                data.rovers.forEach(rover => {
+                    const option = document.createElement("option");
+                    option.value = rover.name;
+                    option.textContent = rover.name;
+                    selectRover.appendChild(option);
+                });
+            })
+            .catch(error => showError("Error fetching rovers data."));
+    }
+
+    function searchData() {
+        const dateFormat = document.getElementById("selectDateFormat").value;
+        let date;
+        if (dateFormat === "Earth Date") {
+            date = document.getElementById("inputDate").value;
+        } else {
+            date = document.getElementById("inputSolDate").value;
+        }
+        const rover = document.getElementById("selectRover").value;
+        const camera = document.getElementById("selectCamera").value || "";
+
+        // Construct API URL based on user input
+        let apiUrl = baseUrl + "rovers/" + rover + "/photos?";
+        if (dateFormat === "Earth Date") {
+            apiUrl += "earth_date=" + date;
+        } else {
+            apiUrl += "sol=" + date;
+        }
+        if (camera) {
+            apiUrl += "&camera=" + camera;
+        }
+        apiUrl += "&api_key=" + API_KEY;
+
+        // Fetch images data
+        fetch(apiUrl)
+            .then(status)
+            .then(response => response.json())
+            .then(data => displaySearchResults(data.photos))
+            .catch(error => showError("Error fetching images data."));
+    }
+
+    function displaySearchResults(photos) {
+        const searchResults = document.getElementById("searchResults");
+        searchResults.innerHTML = ""; // Clear previous results
+
+        if (photos.length === 0) {
+            searchResults.textContent = "No images found.";
+            return;
+        }
+
+        photos.forEach(photo => {
+            const img = document.createElement("img");
+            img.src = photo.img_src;
+            img.alt = "Mars Rover Image";
+            img.className = "img-thumbnail";
+            searchResults.appendChild(img);
+        });
+    }
+
+    function resetForm() {
+        document.getElementById("selectDateFormat").value = "Earth Date";
+        document.getElementById("inputDate").value = "";
+        document.getElementById("inputSolDate").value = "";
+        document.getElementById("selectRover").value = "";
+        document.getElementById("selectCamera").value = "";
+        document.getElementById("searchResults").innerHTML = "";
+    }
+
+    function showError(message) {
+        document.getElementById("errorMessageBody").textContent = message;
+        const errorMessageModal = new bootstrap.Modal(document.getElementById("errorMessageModal"));
+        errorMessageModal.show();
+    }
+
+    const status = (response) => {
+        if (response.status >= 200 && response.status < 300) {
+            return Promise.resolve(response);
+        } else {
+            return Promise.reject(new Error(response.statusText));
+        }
+    };
+});
