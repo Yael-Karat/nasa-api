@@ -119,6 +119,7 @@
         <div class="mb-3">
             <label for="selectRover" class="form-label">Select Rover:</label>
             <select id="selectRover" class="form-select" required>
+                <option value="" selected>Choose a Rover</option>
                 <!-- Rover options will be populated dynamically -->
             </select>
             <div class="invalid-feedback">Please select a rover.</div>
@@ -127,6 +128,7 @@
         <div class="mb-3">
             <label for="selectCamera" class="form-label">Select Camera:</label>
             <select id="selectCamera" class="form-select">
+                <option value="" selected>Please select a Rover first</option>
                 <!-- Camera options will be populated dynamically based on selected rover -->
             </select>
             <div class="invalid-feedback">Please select a camera.</div>
