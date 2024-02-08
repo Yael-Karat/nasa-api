@@ -5,8 +5,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     resetSite();
 
-    // Fetch rovers data on page load
-    fetchRoversData();
 
     // Event listener for changing date format
     document.getElementById('selectDateFormat').addEventListener('change', function () {
@@ -21,6 +19,14 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    // Fetch rovers data on page load
+    fetchRoversData();
+
+    // Event listener for changing the selected rover
+    document.getElementById('selectRover').addEventListener('change', function () {
+        fetchCamerasForRover();
+    });
+
     // Event listeners for search button and reset button
     document.getElementById("getData").addEventListener("click", searchData);
     document.getElementById("searchForm").addEventListener("reset", resetForm);
@@ -28,9 +34,6 @@ document.addEventListener('DOMContentLoaded', function () {
     function resetSite() {
         // Clear saved images from localStorage
         localStorage.removeItem('savedImages');
-
-        // Clear error message modal
-        document.getElementById("errorMessageBody").textContent = "";
     }
 
     function fetchRoversData() {
@@ -44,18 +47,42 @@ document.addEventListener('DOMContentLoaded', function () {
                     option.textContent = rover.name;
                     selectRover.appendChild(option);
                 });
+                // Fetch cameras data for the initially selected rover
+                fetchCamerasForRover();
             })
             .catch(error => showError("Error fetching rovers data."));
     }
 
+    function fetchCamerasForRover() {
+        const selectedRover = document.getElementById("selectRover").value;
+        const camerasDropdown = document.getElementById("selectCamera");
+        fetch(baseUrl + "rovers/" + selectedRover.toLowerCase() + "?api_key=" + API_KEY)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Error fetching cameras data.");
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Clear existing options
+                camerasDropdown.innerHTML = "";
+
+                // Populate camera options dynamically based on selected rover
+                const cameras = data.rover.cameras.map(camera => camera.name);
+
+                cameras.forEach(cameraName => {
+                    const option = document.createElement("option");
+                    option.value = cameraName;
+                    option.textContent = cameraName;
+                    camerasDropdown.appendChild(option);
+                });
+            })
+            .catch(error => showError("Error fetching cameras data."));
+    }
+
     function searchData() {
         const dateFormat = document.getElementById("selectDateFormat").value;
-        let date;
-        if (dateFormat === "Earth Date") {
-            date = document.getElementById("inputDate").value;
-        } else {
-            date = document.getElementById("inputSolDate").value;
-        }
+        const date = dateFormat === "Earth Date" ? document.getElementById("inputDate").value : document.getElementById("inputSolDate").value;
         const rover = document.getElementById("selectRover").value;
         const camera = document.getElementById("selectCamera").value || "";
 
@@ -73,10 +100,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Fetch images data
         fetch(apiUrl)
-            .then(status)
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Error fetching images data.");
+                }
+                return response.json();
+            })
             .then(data => displaySearchResults(data.photos))
-            .catch(error => showError("Error fetching images data."));
+            .catch(error => showError(error.message));
     }
 
     function displaySearchResults(photos) {
@@ -124,7 +155,8 @@ document.addEventListener('DOMContentLoaded', function () {
             // Create save button
             const saveButton = document.createElement("button");
             saveButton.textContent = "Save";
-            saveButton.className = "btn btn-info btn-sm";
+            saveButton.className = "btn btn-info btn-sm save-button"; // Add save-button class
+            saveButton.dataset.index = index; // Set data-index attribute for later retrieval
             saveButton.addEventListener("click", () => saveImage(photos[index]));
 
             // Create full-size button
@@ -145,14 +177,6 @@ document.addEventListener('DOMContentLoaded', function () {
             // Append column div to row div
             rowDiv.appendChild(colDiv);
         }
-        // Attach event listener to save buttons
-        const saveButtons = document.querySelectorAll('.save-button');
-        saveButtons.forEach(button => {
-            button.addEventListener('click', function () {
-                const index = parseInt(this.dataset.index);
-                saveImage(photos[index]);
-            });
-        });
     }
 
     function saveImage(photo) {
@@ -186,22 +210,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Clear saved images from localStorage
         localStorage.removeItem('savedImages');
-
-        // Clear error message modal
-        document.getElementById("errorMessageBody").textContent = "";
     }
 
     function showError(message) {
+        // Show error message using Bootstrap modal
         document.getElementById("errorMessageBody").textContent = message;
         const errorMessageModal = new bootstrap.Modal(document.getElementById("errorMessageModal"));
         errorMessageModal.show();
     }
-
-    const status = (response) => {
-        if (response.status >= 200 && response.status < 300) {
-            return Promise.resolve(response);
-        } else {
-            return Promise.reject(new Error(response.statusText));
-        }
-    };
 });
