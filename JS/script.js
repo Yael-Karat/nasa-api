@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     resetSite();
 
-
     // Event listener for changing date format
     document.getElementById('selectDateFormat').addEventListener('change', function () {
         let regularDateBox = document.getElementById('regularDateBox');
@@ -56,6 +55,12 @@ document.addEventListener('DOMContentLoaded', function () {
     function fetchCamerasForRover() {
         const selectedRover = document.getElementById("selectRover").value;
         const camerasDropdown = document.getElementById("selectCamera");
+
+        // Check if a rover has been selected
+        if (selectedRover === "") {
+            return;
+        }
+
         fetch(baseUrl + "rovers/" + selectedRover.toLowerCase() + "?api_key=" + API_KEY)
             .then(response => {
                 if (!response.ok) {
@@ -68,16 +73,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 camerasDropdown.innerHTML = "";
 
                 // Populate camera options dynamically based on selected rover
-                const cameras = data.rover.cameras.map(camera => camera.name);
-
-                cameras.forEach(cameraName => {
+                const cameras = data.rover.cameras.map(camera => camera.full_name); // Use full_name instead of name
+                cameras.forEach(cameraFullName => {
                     const option = document.createElement("option");
-                    option.value = cameraName;
-                    option.textContent = cameraName;
+                    option.value = cameraFullName;
+                    option.textContent = cameraFullName;
                     camerasDropdown.appendChild(option);
                 });
             })
-            .catch(error => showError("Error fetching cameras data."));
+            .catch(error => {
+                // Show error message
+                showError("Error fetching cameras data. Please try again.");
+                // Restore the previous selected option in the camera dropdown
+                camerasDropdown.value = "";
+            });
     }
 
     function searchData() {
