@@ -155,6 +155,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function searchData() {
+        // Clear previous error messages and "no images found" message
+        document.getElementById("dateError").innerHTML = "";
+        document.getElementById("dateSolError").innerHTML = "";
+        document.getElementById("searchResults").innerHTML = "";
+
         const dateFormat = document.getElementById("selectDateFormat").value;
         let date;
         let inputType;
@@ -304,6 +309,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function resetForm() {
+        // Clear all input fields and previous error messages
         document.getElementById("selectDateFormat").value = "Earth Date";
         document.getElementById("regularDateBox").style.display = "block";
         document.getElementById("inputDate").value = "";
@@ -311,6 +317,8 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById("inputSolDate").value = "";
         document.getElementById("selectRover").value = "";
         document.getElementById("selectCamera").value = "";
+        document.getElementById("dateError").innerHTML = "";
+        document.getElementById("dateSolError").innerHTML = "";
         document.getElementById("searchResults").innerHTML = "";
 
         // Clear saved images from localStorage
