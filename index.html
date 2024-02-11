@@ -13,10 +13,33 @@
             padding: 20%;
             text-align: center;
         }
+
+        .loading-buffer {
+            background: url('images/loading-buffering.gif') center center no-repeat;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 9999;
+        }
+
+        /* Hide loading buffer when content is loaded */
+        .loaded {
+            display: none;
+        }
     </style>
     <title>Mars Images from NASA</title>
 </head>
 <body>
+
+<!-- Loading buffer -->
+<div id="loadingBuffer" class="loading-buffer">
+    <!-- Loading indicator or placeholder image goes here -->
+</div>
 
 <div class="container-fluid text-center p-3 mb-3 header-background">
     <h1>Mars Images from the NASA</h1><br>

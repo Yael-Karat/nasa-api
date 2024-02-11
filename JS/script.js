@@ -1,14 +1,21 @@
+'use strict'
+
 document.addEventListener('DOMContentLoaded', function () {
     const API_KEY = "8DWkvDy8fbVdx7mQKq8AqHKCCUc7bqnFHGY92v1s";
     const baseUrl = "https://api.nasa.gov/mars-photos/api/v1/";
     const MAX_IMAGES = 15;
 
-    resetSite();
+    resetForm();
+
+    // Add loaded class to hide loading buffer when content is loaded
+    window.addEventListener('load', function () {
+        document.getElementById('loadingBuffer').classList.add('loaded');
+    });
 
     // Event listener for changing date format
     document.getElementById('selectDateFormat').addEventListener('change', function () {
-        let regularDateBox = document.getElementById('regularDateBox');
-        let solDateBox = document.getElementById('solDateBox');
+        const regularDateBox = document.getElementById('regularDateBox');
+        const solDateBox = document.getElementById('solDateBox');
         if (this.value === 'Mars Date (Sol)') {
             regularDateBox.style.display = 'none';
             solDateBox.style.display = 'block';
@@ -30,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById("inputDate").setAttribute("min", minEarthDate);
                 document.getElementById("inputDate").setAttribute("max", maxEarthDate);
             })
-            .catch(error => console.error("Error fetching data:", error));
+            .catch(error => {showError("Error fetching cameras data. Please try again.")});
     }
 
     // Call setEarthDateRange function on page load
@@ -95,11 +102,6 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById("getData").addEventListener("click", searchData);
     document.getElementById("searchForm").addEventListener("reset", resetForm);
 
-    function resetSite() {
-        // Clear saved images from localStorage
-        localStorage.removeItem('savedImages');
-    }
-
     function fetchRoversData() {
         fetch(baseUrl + "rovers?api_key=" + API_KEY)
             .then(response => response.json())
@@ -163,15 +165,14 @@ document.addEventListener('DOMContentLoaded', function () {
         const dateFormat = document.getElementById("selectDateFormat").value;
         let date;
         let inputType;
-        let errorMessageElement = document.getElementById('dateSolError');
+        const errorMessageElement = document.getElementById('dateSolError');
 
         if (dateFormat === "Earth Date") {
             date = document.getElementById("inputDate").value;
             inputType = 'dateEarth';
             errorMessageElement.innerHTML = ''; // Clear previous error message
             if (!isValidEarthDate(date)) {
-                const errorMessage = "Invalid date format or date out of range. Please enter a valid date.";
-                errorMessageElement.innerHTML = errorMessage; // Display error message
+                errorMessageElement.innerHTML = "Invalid date format or date out of range. Please enter a valid date."; // Display error message
                 return;
             }
         } else {
@@ -290,7 +291,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function saveImage(photo) {
-        let savedImages = JSON.parse(localStorage.getItem('savedImages')) || [];
+        const savedImages = JSON.parse(localStorage.getItem('savedImages')) || [];
         const exists = savedImages.some(img => img.img_src === photo.img_src);
         if (exists) {
             showError("This image has already been saved.");
