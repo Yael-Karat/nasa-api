@@ -17,7 +17,8 @@ document.addEventListener('DOMContentLoaded', function () {
             solDateBox.style.display = 'none';
         }
     });
-// Fetch data and set date range for Earth date picker
+
+    // Fetch data and set date range for Earth date picker
     function setEarthDateRange() {
         fetch(baseUrl + "manifests/curiosity?api_key=" + API_KEY)
             .then(response => response.json())
@@ -35,39 +36,52 @@ document.addEventListener('DOMContentLoaded', function () {
     // Call setEarthDateRange function on page load
     setEarthDateRange();
 
+    const validateInput = (input, type) => {
+        const trimmedInput = input.trim();
+        switch (type) {
+            case 'dateSol':
+                const maxSolValue = 4074;
+                const solInt = parseInt(trimmedInput, 10);
+                if (isNaN(solInt) || solInt < 0) {
+                    return '<div class="text-danger">Sol value must be a non-negative integer.</div>';
+                } else if (solInt > maxSolValue) {
+                    // If Sol value exceeds the maximum allowed value, set it to the maximum value
+                    document.getElementById("inputSolDate").value = maxSolValue;
+                    return `<div class="text-danger">Sol maximum value is ${maxSolValue}.</div>`;
+                }
+                return '';
+            default:
+                return '';
+        }
+    };
+
     // Add event listener for inputDate change
-    document.getElementById("inputDate").addEventListener("change", function () {
+    document.getElementById("inputDate").addEventListener("input", function () {
         const dateInput = this.value;
         const errorMessageElement = document.getElementById("dateError");
 
-        if (!isValidEarthDate(dateInput)) {
-            errorMessageElement.innerHTML = "Invalid date format or date out of range. Please enter a valid date.";
-            this.value = ""; // Clear the input field
-        } else {
-            errorMessageElement.innerHTML = "";
+        // Clear previous error message
+        errorMessageElement.innerHTML = "";
+
+        // Check if the input is empty
+        if (dateInput.trim() === "") {
+            return;
         }
     });
 
     function isValidEarthDate(date) {
-        // Check if the input date is a valid Earth date and falls within the fetched range
         const minDate = document.getElementById("inputDate").min;
         const maxDate = document.getElementById("inputDate").max;
         const inputDate = new Date(date);
+
+        // Check if the input is a valid Date object
+        if (isNaN(inputDate.getTime())) {
+            return false;
+        }
+
+        // Check if the input date is within the fetched range
         return inputDate >= new Date(minDate) && inputDate <= new Date(maxDate);
     }
-
-    // Add event listener for inputDate change
-    document.getElementById("inputDate").addEventListener("change", function () {
-        const dateInput = this.value;
-        const errorMessageElement = document.getElementById("dateError");
-
-        if (!isValidEarthDate(dateInput)) {
-            errorMessageElement.innerHTML = "Invalid date. Please enter a valid date.";
-            this.value = ""; // Clear the input field
-        } else {
-            errorMessageElement.innerHTML = "";
-        }
-    });
 
     // Fetch rovers data on page load
     fetchRoversData();
@@ -140,26 +154,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    const validateInput = (input, type) => {
-        const trimmedInput = input.trim();
-        switch (type) {
-            case 'dateSol':
-                const maxSolValue = 4074;
-                const solInt = parseInt(trimmedInput, 10);
-                if (isNaN(solInt) || solInt < 0) {
-                    return '<div class="text-danger">Sol value must be a non-negative integer.</div>';
-                } else if (solInt > maxSolValue) {
-                    // If Sol value exceeds the maximum allowed value, set it to the maximum value
-                    document.getElementById("inputSolDate").value = maxSolValue;
-                    return `<div class="text-danger">Sol maximum value is ${maxSolValue}.</div>`;
-                }
-                return '';
-            default:
-                return '';
-        }
-    };
-
-
     function searchData() {
         const dateFormat = document.getElementById("selectDateFormat").value;
         let date;
@@ -171,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function () {
             inputType = 'dateEarth';
             errorMessageElement.innerHTML = ''; // Clear previous error message
             if (!isValidEarthDate(date)) {
-                const errorMessage = validateInput(date, inputType);
+                const errorMessage = "Invalid date format or date out of range. Please enter a valid date.";
                 errorMessageElement.innerHTML = errorMessage; // Display error message
                 return;
             }
