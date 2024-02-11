@@ -205,7 +205,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     return (photo.camera.full_name === camera || camera === "");
                 });
                 if (filteredPhotos.length === 0) {
-                    searchResults.textContent = "No images found.";
+                    const messageContainer = document.createElement("div");
+                    messageContainer.className = "alert alert-warning";
+                    messageContainer.role = "alert";
+                    messageContainer.style.fontSize = "larger";
+                    messageContainer.textContent = "No images found!";
+
+                    // Append the message container to the search results
+                    searchResults.appendChild(messageContainer);
                 } else {
                     displaySearchResults(filteredPhotos);
                 }
