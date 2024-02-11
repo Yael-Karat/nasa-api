@@ -189,20 +189,31 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             apiUrl += "sol=" + date;
         }
-        if (camera) {
-            apiUrl += "&camera=" + camera;
-        }
-        apiUrl += "&api_key=" + API_KEY;
 
         // Fetch images data
-        fetch(apiUrl)
+        fetch(apiUrl + "&api_key=" + API_KEY)
             .then(response => {
                 if (!response.ok) {
                     throw new Error("Error fetching images data.");
                 }
                 return response.json();
             })
-            .then(data => displaySearchResults(data.photos))
+            .then(data => {
+                const photos = data.photos;
+                if (photos.length === 0) {
+                    showError("No images found.");
+                } else {
+                    // Check if photos are available for the selected camera
+                    if (camera) {
+                        const filteredPhotos = photos.filter(photo => photo.camera.full_name === camera);
+                        if (filteredPhotos.length === 0) {
+                            showError("No images found for the selected camera.");
+                            return;
+                        }
+                    }
+                    displaySearchResults(photos);
+                }
+            })
             .catch(error => showError(error.message));
     }
 
