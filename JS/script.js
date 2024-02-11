@@ -317,7 +317,12 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById("solDateBox").style.display = "none";
         document.getElementById("inputSolDate").value = "";
         document.getElementById("selectRover").value = "";
-        document.getElementById("selectCamera").value = "";
+
+        // Clear options and reset value for cameras dropdown
+        const camerasDropdown = document.getElementById("selectCamera");
+        camerasDropdown.innerHTML = "<option value='' selected>Please select a Rover first</option>";
+        camerasDropdown.value = "";
+
         document.getElementById("dateError").innerHTML = "";
         document.getElementById("dateSolError").innerHTML = "";
         document.getElementById("searchResults").innerHTML = "";
