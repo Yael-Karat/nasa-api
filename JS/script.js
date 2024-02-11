@@ -181,6 +181,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const rover = document.getElementById("selectRover").value;
         const camera = document.getElementById("selectCamera").value || "";
+        const searchResults = document.getElementById("searchResults");
 
         // Construct API URL based on user input
         let apiUrl = baseUrl + "rovers/" + rover + "/photos?";
@@ -200,18 +201,13 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .then(data => {
                 const photos = data.photos;
-                if (photos.length === 0) {
-                    showError("No images found.");
+                const filteredPhotos = photos.filter(photo => {
+                    return (photo.camera.full_name === camera || camera === "");
+                });
+                if (filteredPhotos.length === 0) {
+                    searchResults.textContent = "No images found.";
                 } else {
-                    // Check if photos are available for the selected camera
-                    if (camera) {
-                        const filteredPhotos = photos.filter(photo => photo.camera.full_name === camera);
-                        if (filteredPhotos.length === 0) {
-                            showError("No images found for the selected camera.");
-                            return;
-                        }
-                    }
-                    displaySearchResults(photos);
+                    displaySearchResults(filteredPhotos);
                 }
             })
             .catch(error => showError(error.message));
@@ -220,11 +216,6 @@ document.addEventListener('DOMContentLoaded', function () {
     function displaySearchResults(photos) {
         const searchResults = document.getElementById("searchResults");
         searchResults.innerHTML = ""; // Clear previous results
-
-        if (photos.length === 0) {
-            searchResults.textContent = "No images found.";
-            return;
-        }
 
         let rowDiv;
         for (let index = 0; index < Math.min(photos.length, MAX_IMAGES); index++) {
