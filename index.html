@@ -70,20 +70,11 @@
     </nav>
 </div>
 
-<div class="modal fade" id="savedImages" tabindex="-1" role="dialog" aria-labelledby="savedImagesLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="savedModalLabel">Image Saved</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Image has been saved to favorites.
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
-            </div>
-        </div>
+<div class="container">
+    <div id="savedImagesContent" style="display: none;">
+        <h1>Saved Images</h1>
+        <!-- Saved images content goes here -->
+        <button class="btn btn-primary" id="backToSearchButton">Back to Search</button>
     </div>
 </div>
 
