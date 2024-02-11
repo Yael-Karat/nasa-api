@@ -300,7 +300,7 @@ document.addEventListener('DOMContentLoaded', function () {
         savedImages.push(photo);
         localStorage.setItem('savedImages', JSON.stringify(savedImages));
         // Display a modal confirmation message
-        const savedModal = new bootstrap.Modal(document.getElementById("savedModal"));
+        const savedModal = new bootstrap.Modal(document.getElementById("savedImages"));
         savedModal.show();
     }
 
