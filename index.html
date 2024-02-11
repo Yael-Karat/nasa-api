@@ -105,15 +105,15 @@
 
         <div class="mb-3" id="regularDateBox">
             <label for="inputDate" class="form-label">Date:</label>
-            <input type="date" class="form-control" id="inputDate" required>
-            <div class="invalid-feedback">Please enter a valid date.</div>
+            <input type="date" class="form-control" id="inputDate" required min="1990-01-01" max="2030-12-31">
+            <div class="text-danger error-message" id="dateError"></div>
         </div>
 
         <!-- SOL date input field (hidden by default) -->
         <div class="mb-3" id="solDateBox" style="display: none;">
             <label for="inputSolDate" class="form-label">Sol:</label>
             <input type="number" class="form-control" id="inputSolDate" min="0" max="4074">
-            <div class="invalid-feedback">Please enter a valid Sol date.</div>
+            <div class="text-danger error-message" id="dateSolError"></div>
         </div>
 
         <div class="mb-3">
@@ -122,7 +122,6 @@
                 <option value="" selected>Choose a Rover</option>
                 <!-- Rover options will be populated dynamically -->
             </select>
-            <div class="invalid-feedback">Please select a rover.</div>
         </div>
 
         <div class="mb-3">
@@ -131,7 +130,6 @@
                 <option value="" selected>Please select a Rover first</option>
                 <!-- Camera options will be populated dynamically based on selected rover -->
             </select>
-            <div class="invalid-feedback">Please select a camera.</div>
         </div>
 
         <button type="button" id="getData" class="btn btn-outline-info mb-2">search</button>

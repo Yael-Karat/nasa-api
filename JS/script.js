@@ -18,6 +18,45 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    // Function to fetch data and set date range for Earth date picker
+    function setEarthDateRange() {
+        fetch(baseUrl + "manifests/curiosity?api_key=" + API_KEY)
+            .then(response => response.json())
+            .then(data => {
+                const minEarthDate = data.photo_manifest.landing_date; // Minimum Earth date
+                const maxEarthDate = data.photo_manifest.max_date; // Maximum Earth date
+
+                // Set min and max attributes of the inputDate element
+                document.getElementById("inputDate").setAttribute("min", minEarthDate);
+                document.getElementById("inputDate").setAttribute("max", maxEarthDate);
+            })
+            .catch(error => console.error("Error fetching data:", error));
+    }
+
+    // Call setEarthDateRange function on page load
+    setEarthDateRange();
+
+    // Add event listener for inputDate change
+    document.getElementById("inputDate").addEventListener("change", function () {
+        const dateInput = this.value;
+        const errorMessageElement = document.getElementById("dateError");
+
+        if (!isValidEarthDate(dateInput)) {
+            errorMessageElement.innerHTML = "Invalid date format. Please enter a valid date.";
+            this.value = ""; // Clear the input field
+        } else {
+            errorMessageElement.innerHTML = "";
+        }
+    });
+
+    function isValidEarthDate(date) {
+        // Check if the input date is a valid Earth date
+        // You can use various methods to validate the Earth date format
+        // For example, you can use regular expressions or date parsing
+        // Here's an example using the Date object
+        return !isNaN(Date.parse(date));
+    }
+
     // Fetch rovers data on page load
     fetchRoversData();
 
@@ -89,9 +128,51 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
+    const validateInput = (input, type) => {
+        const trimmedInput = input.trim();
+        switch (type) {
+            case 'dateSol':
+                const maxSolValue = 4074;
+                const solInt = parseInt(trimmedInput, 10);
+                if (isNaN(solInt) || solInt < 0) {
+                    return '<div class="text-danger">Sol value must be a non-negative integer.</div>';
+                } else if (solInt > maxSolValue) {
+                    // If Sol value exceeds the maximum allowed value, set it to the maximum value
+                    document.getElementById("inputSolDate").value = maxSolValue;
+                    return `<div class="text-danger">Sol maximum value is ${maxSolValue}.</div>`;
+                }
+                return '';
+            default:
+                return '';
+        }
+    };
+
+
     function searchData() {
         const dateFormat = document.getElementById("selectDateFormat").value;
-        const date = dateFormat === "Earth Date" ? document.getElementById("inputDate").value : document.getElementById("inputSolDate").value;
+        let date;
+        let inputType;
+        let errorMessageElement = document.getElementById('dateSolError');
+
+        if (dateFormat === "Earth Date") {
+            date = document.getElementById("inputDate").value;
+            inputType = 'dateEarth';
+            errorMessageElement.innerHTML = ''; // Clear previous error message
+            if (!isValidEarthDate(date)) {
+                const errorMessage = validateInput(date, inputType);
+                errorMessageElement.innerHTML = errorMessage; // Display error message
+                return;
+            }
+        } else {
+            date = document.getElementById("inputSolDate").value;
+            inputType = 'dateSol';
+            const errorMessage = validateInput(date, inputType);
+            errorMessageElement.innerHTML = errorMessage; // Display error message
+            if (errorMessage) {
+                return;
+            }
+        }
+
         const rover = document.getElementById("selectRover").value;
         const camera = document.getElementById("selectCamera").value || "";
 
@@ -223,7 +304,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function showError(message) {
         // Show error message using Bootstrap modal
-        document.getElementById("errorMessageBody").textContent = message;
+        document.getElementById("errorMessageBody").innerHTML = message;
         const errorMessageModal = new bootstrap.Modal(document.getElementById("errorMessageModal"));
         errorMessageModal.show();
     }
