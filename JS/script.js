@@ -17,8 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
             solDateBox.style.display = 'none';
         }
     });
-
-    // Function to fetch data and set date range for Earth date picker
+// Fetch data and set date range for Earth date picker
     function setEarthDateRange() {
         fetch(baseUrl + "manifests/curiosity?api_key=" + API_KEY)
             .then(response => response.json())
@@ -42,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const errorMessageElement = document.getElementById("dateError");
 
         if (!isValidEarthDate(dateInput)) {
-            errorMessageElement.innerHTML = "Invalid date format. Please enter a valid date.";
+            errorMessageElement.innerHTML = "Invalid date format or date out of range. Please enter a valid date.";
             this.value = ""; // Clear the input field
         } else {
             errorMessageElement.innerHTML = "";
@@ -50,12 +49,25 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     function isValidEarthDate(date) {
-        // Check if the input date is a valid Earth date
-        // You can use various methods to validate the Earth date format
-        // For example, you can use regular expressions or date parsing
-        // Here's an example using the Date object
-        return !isNaN(Date.parse(date));
+        // Check if the input date is a valid Earth date and falls within the fetched range
+        const minDate = document.getElementById("inputDate").min;
+        const maxDate = document.getElementById("inputDate").max;
+        const inputDate = new Date(date);
+        return inputDate >= new Date(minDate) && inputDate <= new Date(maxDate);
     }
+
+    // Add event listener for inputDate change
+    document.getElementById("inputDate").addEventListener("change", function () {
+        const dateInput = this.value;
+        const errorMessageElement = document.getElementById("dateError");
+
+        if (!isValidEarthDate(dateInput)) {
+            errorMessageElement.innerHTML = "Invalid date. Please enter a valid date.";
+            this.value = ""; // Clear the input field
+        } else {
+            errorMessageElement.innerHTML = "";
+        }
+    });
 
     // Fetch rovers data on page load
     fetchRoversData();
