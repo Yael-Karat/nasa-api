@@ -37,7 +37,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById("inputDate").setAttribute("min", minEarthDate);
                 document.getElementById("inputDate").setAttribute("max", maxEarthDate);
             })
-            .catch(error => {showError("Error fetching cameras data. Please try again.")});
+            .catch(error => {
+                showError("Error fetching cameras data. Please try again.")
+            });
     }
 
     // Call setEarthDateRange function on page load
@@ -289,6 +291,47 @@ document.addEventListener('DOMContentLoaded', function () {
             rowDiv.appendChild(colDiv);
         }
     }
+
+    // Event listener for clicking on "Saved Images" button in the menu
+    document.querySelector('.nav-link[href="#"]').addEventListener('click', function () {
+        // Hide search form and related text
+        document.getElementById('searchForm').style.display = 'none';
+        document.getElementById('searchResults').style.display = 'none';
+
+        // Show saved images content
+        document.getElementById('savedImagesContent').style.display = 'block';
+        // Show "Back to Search" button
+        document.getElementById('backToSearchButton').style.display = 'block';
+    });
+
+    // Event listener for clicking on "Back to Search" button
+    document.getElementById('backToSearchButton').addEventListener('click', function () {
+        // Show search form and related text
+        document.getElementById('searchForm').style.display = 'block';
+        document.getElementById('searchResults').style.display = 'block'; // Show search results
+
+        // Hide saved images content
+        document.getElementById('savedImagesContent').style.display = 'none';
+
+        // Hide "Back to Search" button
+        this.style.display = 'none';
+
+        // Show the saved images link in the menu
+        document.querySelector('.nav-link[href="#"]').style.display = 'block';
+    });
+
+    // Function to show "Back to Search" button when necessary
+    function showBackToSearchButton() {
+        // Show "Back to Search" button if saved images content is hidden
+        if (document.getElementById('savedImagesContent').style.display === 'none') {
+            document.getElementById('backToSearchButton').style.display = 'block';
+        } else {
+            document.getElementById('backToSearchButton').style.display = 'none'; // Hide button if saved images content is shown
+        }
+    }
+
+    // Call showBackToSearchButton function on page load
+    showBackToSearchButton();
 
     function saveImage(photo) {
         const savedImages = JSON.parse(localStorage.getItem('savedImages')) || [];
