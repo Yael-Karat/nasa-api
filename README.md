@@ -17,3 +17,12 @@ The purpose of the exercise
 <p>
 Building an access website to NASA's Mars image database using rest api.
 </p>
+
+<h1>
+Known bug:
+</h1>
+<p>
+An error message for images that are saved more than once does not appear, but there is a function for it and it is called for execution.
+<br>
+The actual image is not saved more than once.
+</p>
