@@ -31,6 +31,12 @@
         .loaded {
             display: none;
         }
+
+        /* Hide carousel and carousel controls by default */
+        #carouselControls,
+        #carouselFade {
+            display: none;
+        }
     </style>
     <title>Mars Images from NASA</title>
 </head>
@@ -73,8 +79,30 @@
 <div class="container">
     <div id="savedImagesContent" style="display: none;">
         <h1>Saved Images</h1>
-        <!-- Saved images content goes here -->
+        <div id="savedImagesList">
+            <!-- Saved images list goes here -->
+        </div>
         <button class="btn btn-outline-primary mb-2" id="backToSearchButton">Back to Search</button>
+    </div>
+
+    <!-- Carousel control buttons -->
+    <div id="carouselControls">
+        <button class="btn btn-outline-primary" id="carouselStartButton">Start Carousel</button>
+        <button class="btn btn-outline-primary" id="carouselStopButton">Stop Carousel</button>
+    </div>
+
+    <div id="carouselFade" class="carousel slide carousel-fade">
+        <div class="carousel-inner">
+            <!-- Carousel items will be added dynamically -->
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselFade" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselFade" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
     </div>
 </div>
 
