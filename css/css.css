@@ -1,0 +1,31 @@
+.header-background {
+    background-image: url('../images/space.jpg');
+    background-size: revert;
+    color: white;
+    padding: 20%;
+    text-align: center;
+}
+
+.loading-buffer {
+    background: url('../images/loading-buffering.gif') center center no-repeat;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+}
+
+/* Hide loading buffer when content is loaded */
+.loaded {
+    display: none;
+}
+
+/* Hide carousel and carousel controls by default */
+#carouselControls,
+#carouselFade {
+    display: none;
+}
