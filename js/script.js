@@ -352,8 +352,9 @@ document.addEventListener('DOMContentLoaded', function () {
             const row = document.createElement('div');
             row.classList.add('row', 'mb-2');
             row.innerHTML = `
-            <div class="col">${photo.earth_date}</div>
-            <div class="col">${photo.camera.full_name}</div>
+            <div class="col">Earth Date: ${photo.earth_date}</div>
+            <div class="col">Sol: ${photo.sol}</div>
+            <div class="col">Camera: ${photo.camera.name}</div>
             <div class="col"><button class="btn btn-danger btn-sm delete-button" data-index="${index}">Delete</button></div>
         `;
             savedImagesList.appendChild(row);
