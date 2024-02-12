@@ -451,19 +451,24 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('carouselExampleFade').style.display = 'none';
     });
 
-    // Event listener for clicking on "Home" button
-    document.querySelector('.nav-link[data-target="#home"]').addEventListener('click', function () {
-        const imagesSearchForm = document.getElementById("imagesSearchForm");
-        const savedImagesContent = document.getElementById("savedImagesContent");
+    // Event listener for clicking on "Home" button using event delegation
+    document.body.addEventListener('click', function(event) {
+        if (event.target.closest('.nav-link[data-target="#home"]')) {
+            const imagesSearchForm = document.getElementById("imagesSearchForm");
+            const savedImagesContent = document.getElementById("savedImagesContent");
+            const carouselControls = document.getElementById('carouselControls');
 
-        // Show the search form
-        imagesSearchForm.style.display = 'block';
+            // Show the search form
+            imagesSearchForm.style.display = 'block';
 
-        // Hide saved images content
-        savedImagesContent.style.display = 'none';
+            // Hide saved images content
+            savedImagesContent.style.display = 'none';
 
-        // Hide carousel controls if needed
-        document.getElementById('carouselControls').style.display = 'none';
+            // Hide carousel controls if needed
+            if (carouselControls) {
+                carouselControls.style.display = 'none';
+            }
+        }
     });
 
     // Event listener for clicking on "Saved Images" button in the menu
