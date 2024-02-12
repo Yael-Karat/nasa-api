@@ -5,53 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <style>
-        .header-background {
-            background-image: url('images/space.jpg');
-            background-size: revert;
-            color: white;
-            padding: 20%;
-            text-align: center;
-        }
-
-        .loading-buffer {
-            background: url('images/loading-buffering.gif') center center no-repeat;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 9999;
-        }
-
-        /* Hide loading buffer when content is loaded */
-        .loaded {
-            display: none;
-        }
-
-        /* Hide carousel and carousel controls by default */
-        #carouselControls,
-        #carouselFade {
-            display: none;
-        }
-    </style>
+    <link href="css/css.css" rel="stylesheet">
     <title>Mars Images from NASA</title>
 </head>
 <body>
-
-<!-- Loading buffer -->
 <div id="loadingBuffer" class="loading-buffer">
-    <!-- Loading indicator or placeholder image goes here -->
 </div>
-
 <div class="container-fluid text-center p-3 mb-3 header-background">
     <h1>Mars Images from the NASA</h1><br>
     <h5>Browse NASA Mars images and create a carrousel</h5>
 </div>
-
 <div class="container">
     <nav class="navbar navbar-expand-md navbar-light">
         <a class="navbar-brand">
@@ -77,111 +40,89 @@
         </div>
     </nav>
 </div>
-
 <div class="container" id="home"></div>
-
 <div class="container" id="savedImagesContent" style="display: none;">
-    <!-- Saved images content -->
     <h3>Saved Images</h3>
     <div id="savedImagesList">
-        <!-- Saved images list goes here -->
     </div>
-
-    <!-- Carousel control buttons -->
     <div id="carouselControls" class="d-flex">
         <button class="btn btn-outline-primary me-3" id="backToSearchButton">Back to Search</button>
         <button class="btn btn-outline-primary me-3" id="carouselStartButton">Start Carousel</button>
         <button class="btn btn-outline-primary" id="carouselStopButton">Stop Carousel</button>
     </div>
-
-    <!-- Carousel -->
-    <div id="carouselFade" class="carousel slide carousel-fade">
+    <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
-            <!-- Carousel items will be added dynamically -->
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselFade" data-bs-slide="prev">
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Previous</span>
         </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselFade" data-bs-slide="next">
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Next</span>
         </button>
     </div>
 </div>
-
 <div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="detailsModalLabel">Whom am I</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>Name: Yael Karat</p>
-                <p>Email: yaelkara@edu.hac.ac.il</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ok</button>
-            </div>
-        </div>
-    </div>
+   aria-hidden="true">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="detailsModalLabel">Whom am I</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <p>Name: Yael Karat</p>
+              <p>Email: yaelkara@edu.hac.ac.il</p>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ok</button>
+          </div>
+      </div>
+  </div>
 </div>
-
 <div class="container" id="imagesSearchForm">
-    <h3>Search for images:</h3>
-    <p>
-        select first a date than a rover, or vice versa. Select a camera (optional) and hit search. Then add images to
-        your preferred list. Browse you preferred list, remove image if wanted, start/stop a carrousel.
-    </p>
-
-    <form id="searchForm">
-        <div class="mb-3">
-            <label for="selectDateFormat">Select Date Format:</label><br>
-            <select id="selectDateFormat" class="form-select">
-                <option value="Earth Date" selected>Earth Date</option>
-                <option value="Mars Date (Sol)">Mars Date (Sol)</option>
-            </select>
-        </div>
-
-        <div class="mb-3" id="regularDateBox">
-            <label for="inputDate" class="form-label">Date:</label>
-            <input type="date" class="form-control" id="inputDate">
-            <div class="text-danger error-message" id="dateError"></div>
-        </div>
-
-        <!-- SOL date input field (hidden by default) -->
+  <h3>Search for images:</h3>
+  <p>
+      select first a date than a rover, or vice versa. Select a camera (optional) and hit search. Then add images to
+      your preferred list. Browse you preferred list, remove image if wanted, start/stop a carrousel.
+  </p>
+  <form id="searchForm">
+      <div class="mb-3">
+          <label for="selectDateFormat">Select Date Format:</label><br>
+          <select id="selectDateFormat" class="form-select">
+              <option value="Earth Date" selected>Earth Date</option>
+              <option value="Mars Date (Sol)">Mars Date (Sol)</option>
+          </select>
+      </div>
+      <div class="mb-3" id="regularDateBox">
+          <label for="inputDate" class="form-label">Date:</label>
+          <input type="date" class="form-control" id="inputDate">
+          <div class="text-danger error-message" id="dateError"></div>
+      </div>
         <div class="mb-3" id="solDateBox" style="display: none;">
             <label for="inputSolDate" class="form-label">Sol:</label>
             <input type="number" class="form-control" id="inputSolDate" min="0" max="4074">
             <div class="text-danger error-message" id="dateSolError"></div>
         </div>
-
         <div class="mb-3">
             <label for="selectRover" class="form-label">Select Rover:</label>
             <select id="selectRover" class="form-select" required>
                 <option value="" selected>Choose a Rover</option>
-                <!-- Rover options will be populated dynamically -->
             </select>
         </div>
-
         <div class="mb-3">
             <label for="selectCamera" class="form-label">Select Camera:</label>
             <select id="selectCamera" class="form-select">
                 <option value="" selected>Please select a Rover first</option>
-                <!-- Camera options will be populated dynamically based on selected rover -->
             </select>
         </div>
-
         <button type="button" id="getData" class="btn btn-outline-info mb-2">search</button>
         <button type="reset" class="btn btn-outline-info mb-2">clear</button>
     </form>
     <h3>Search results:</h3>
     <div id="searchResults" class="mt-4"></div>
 </div>
-
-<!-- Modal for error messages -->
 <div class="modal fade" id="errorMessageModal" tabindex="-1" aria-labelledby="errorMessageModalLabel"
      aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -194,14 +135,11 @@
         </div>
     </div>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous">
 </script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 <script src="js/script.js"></script>
-
 </body>
 </html>
