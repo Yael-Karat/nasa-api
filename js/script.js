@@ -470,12 +470,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const saveImage = (photo) => {
         const exists = savedImages.some(img => img.img_src === photo.img_src);
         if (exists) {
-            displayMessage("This image has already been saved.", 5000);
+            showError("This image has already been saved.");
         } else {
             savedImages.push(photo);
             localStorage.setItem('savedImages', JSON.stringify(savedImages));
             updateSavedImagesList();
-            showError("The image has been successfully saved.");
+            displayMessage("The image has been successfully saved.", 5000);
         }
     };
 
