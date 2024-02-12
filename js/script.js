@@ -1,5 +1,11 @@
 'use strict'
 
+/**
+ * Purpose: Executes the provided callback function when the DOMContentLoaded event is fired, indicating that the initial HTML document has been completely loaded and parsed.
+ * Parameters: callback (function): The function to be executed when the event is fired.
+ * Returns: None.
+ */
+
 document.addEventListener('DOMContentLoaded', function () {
     const API_KEY = "8DWkvDy8fbVdx7mQKq8AqHKCCUc7bqnFHGY92v1s";
     const baseUrl = "https://api.nasa.gov/mars-photos/api/v1/";
@@ -21,7 +27,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Fetch data and set date range for Earth date picker
+    /**
+     * Purpose: Fetches data from the NASA API to determine the minimum and maximum Earth dates available for the Mars rover photos and sets the date range for the Earth date picker accordingly.
+     * Parameters: None.
+     * Returns: None.
+     */
     function setEarthDateRange() {
         fetch(baseUrl + "manifests/curiosity?api_key=" + API_KEY)
             .then(response => response.json())
@@ -42,6 +52,11 @@ document.addEventListener('DOMContentLoaded', function () {
     // Call setEarthDateRange function on page load
     setEarthDateRange();
 
+    /**
+     * Purpose: Validates the user input based on the specified type (in this case, Mars Sol date) and returns an error message if the input is invalid.
+     * Parameters: input (string): The user input to be validated and type (string): The type of input being validated.
+     * Returns: (string) Error message if input is invalid, empty string ('') otherwise.
+     */
     const validateInput = (input, type) => {
         const trimmedInput = input.trim();
         switch (type) {
@@ -75,6 +90,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    /**
+     * Purpose: Checks if the provided date is a valid Earth date within the specified range.
+     * Parameters: date (string): The date to be validated.
+     * Returns: (boolean) True if the date is valid and within range, false otherwise.
+     */
     function isValidEarthDate(date) {
         const minDate = document.getElementById("inputDate").min;
         const maxDate = document.getElementById("inputDate").max;
@@ -101,6 +121,11 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById("getData").addEventListener("click", searchData);
     document.getElementById("searchForm").addEventListener("reset", resetForm);
 
+    /**
+     * Purpose: Fetches data about the available Mars rovers from the NASA API and populates the rover selection dropdown menu.
+     * Parameters: None.
+     * Returns: None.
+     */
     function fetchRoversData() {
         fetch(baseUrl + "rovers?api_key=" + API_KEY)
             .then(response => response.json())
@@ -118,6 +143,11 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => showError("Error fetching rovers data."));
     }
 
+    /**
+     * Purpose: Fetches data about the cameras available for the selected Mars rover from the NASA API and populates the camera selection dropdown menu.
+     * Parameters: None.
+     * Returns: None.
+     */
     function fetchCamerasForRover() {
         const selectedRover = document.getElementById("selectRover").value;
         const camerasDropdown = document.getElementById("selectCamera");
@@ -155,6 +185,11 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
+    /**
+     * Purpose: Fetches Mars rover photos based on user input (rover, camera, date) from the NASA API and displays the search results.
+     * Parameters: None.
+     * Returns: None.
+     */
     function searchData() {
         // Clear previous error messages and "no images found" message
         document.getElementById("dateError").innerHTML = "";
@@ -225,6 +260,11 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => showError(error.message));
     }
 
+    /**
+     * Purpose: Displays the search results (Mars rover photos) in the UI.
+     * Parameters: photos (array of objects): An array containing information about the Mars rover photos to be displayed.
+     * Returns: None.
+     */
     function displaySearchResults(photos) {
         const searchResults = document.getElementById("searchResults");
         searchResults.innerHTML = ""; // Clear previous results
@@ -327,7 +367,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Function to update the saved images list displayed in the menu
+    /**
+     * Purpose: Updates the list of saved Mars rover images displayed in the UI menu.
+     * Parameters: None.
+     * Returns: None.
+     */
     const updateSavedImagesList = () => {
         savedImages = JSON.parse(localStorage.getItem('savedImages')) || [];
         const savedImagesList = document.getElementById('savedImagesList');
@@ -355,6 +399,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
+    /**
+     * Purpose: Handles the click event on the save button of images displayed in search results.
+     * Parameters: event (Event object): The event object representing the click event.
+     * Returns: None.
+     */
     // Function to handle search result click
     const handleSearchResultClick = (event) => {
         if (event.target.classList.contains('save-button')) {
@@ -378,6 +427,11 @@ document.addEventListener('DOMContentLoaded', function () {
     // Event listener for clicking on the save button of images displayed in search results
     document.getElementById('searchResults').addEventListener('click', handleSearchResultClick);
 
+    /**
+     * Purpose: Hides the saved images content and associated elements.
+     * Parameters: None.
+     * Returns: None.
+     */
     function hideSavedImagesPage() {
         // Hide saved images content
         document.getElementById('savedImagesContent').style.display = 'none';
@@ -386,7 +440,11 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('carouselControls').style.display = 'none';
     }
 
-    // Function to create carousel from saved images
+    /**
+     * Purpose: Creates a carousel of saved images in the UI.
+     * Parameters: None.
+     * Returns: None.
+     */
     function createCarousel() {
         const carouselInner = document.querySelector('.carousel-inner');
         carouselInner.innerHTML = ''; // Clear previous carousel items
@@ -411,13 +469,22 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    /**
+     * Purpose: Updates the saved images list and associated elements in the UI.
+     * Parameters: None.
+     * Returns: None.
+     */
     // Function to update the saved images list and carousel
     function updateSavedImages() {
         // Update saved images list
         updateSavedImagesList();
     }
 
-    // Function to start the carousel
+    /**
+     * Purpose: Initiates the carousel to display saved images in a slideshow.
+     * Parameters: None.
+     * Returns: None.
+     */
     function startCarousel() {
         document.getElementById('carouselExampleFade').style.display = 'block';
         // Update carousel
@@ -426,6 +493,11 @@ document.addEventListener('DOMContentLoaded', function () {
         $('.carousel').carousel('cycle');
     }
 
+    /**
+     * Purpose: Displays the saved images page and associated elements.
+     * Parameters: None.
+     * Returns: None.
+     */
     // Function to show saved images page
     function showSavedImagesPage() {
         // Show saved images content
@@ -484,7 +556,11 @@ document.addEventListener('DOMContentLoaded', function () {
         hideSavedImagesPage();
     });
 
-    // Function to display a message for a specified duration
+    /**
+     * Purpose: Displays a message to the user for a specified duration.
+     * Parameters: message (string): The message to be displayed and duration (number): The duration (in milliseconds) for which the message should be displayed.
+     * Returns: None.
+     */
     const displayMessage = (message, duration) => {
         const messageElement = document.createElement('div');
         messageElement.className = 'alert alert-success';
@@ -497,7 +573,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }, duration);
     };
 
-    // Function to save image
+    /**
+     * Purpose: Saves the selected image to the list of saved images in the localStorage.
+     * Parameters: photo (object): Information about the photo to be saved.
+     * Returns: None.
+     */
     const saveImage = (photo) => {
         const exists = savedImages.some(img => img.img_src === photo.img_src);
         if (exists) {
@@ -511,11 +591,21 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
+    /**
+     * Purpose: Opens the selected image in full size in a new window.
+     * Parameters: imgSrc (string): The URL of the image to be opened.
+     * Returns: None.
+     */
     function openFullSize(imgSrc) {
         // Open full-size image in a new window
         window.open(imgSrc, "_blank");
     }
 
+    /**
+     * Purpose: Resets the search form and associated elements to their initial state.
+     * Parameters: None.
+     * Returns: None.
+     */
     function resetForm() {
         // Clear all input fields and previous error messages
         document.getElementById("selectDateFormat").value = "Earth Date";
@@ -539,6 +629,11 @@ document.addEventListener('DOMContentLoaded', function () {
         savedImages = [];
     }
 
+    /**
+     * Purpose: Displays an error message using Bootstrap modal.
+     * Parameters: message (string): The error message to be displayed.
+     * Returns: None.
+     */
     function showError(message) {
         // Show error message using Bootstrap modal
         document.getElementById("errorMessageBody").innerHTML = message;
