@@ -429,31 +429,34 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Event listener for clicking on "Saved Images" button in the menu
     document.querySelector('.nav-link[href="#"]').addEventListener('click', function () {
+        const imagesSearchForm = document.getElementById("imagesSearchForm");
+        imagesSearchForm.style.display = "none";
+
         showSavedImagesPage();
     });
 
-    // Event listener for clicking on "Back to Search" button
+// Event listener for clicking on "Back to Search" button
     document.getElementById('backToSearchButton').addEventListener('click', function () {
         hideSavedImagesPage();
     });
 
-    // Event listener for carousel start button
+// Event listener for carousel start button
     document.getElementById('carouselStartButton').addEventListener('click', function () {
         $('#carouselFade').carousel('cycle');
     });
 
-    // Event listener for carousel stop button
+// Event listener for carousel stop button
     document.getElementById('carouselStopButton').addEventListener('click', function () {
         $('#carouselFade').carousel('pause');
     });
 
-    // Function to update saved images list and carousel
+// Function to update saved images list and carousel
     function updateSavedImages() {
         updateSavedImagesList();
         createCarousel();
     }
 
-    // Function to display a message for a specified duration
+// Function to display a message for a specified duration
     const displayMessage = (message, duration) => {
         const messageElement = document.createElement('div');
         messageElement.className = 'alert alert-success';
@@ -466,7 +469,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }, duration);
     };
 
-    // Function to save image
+// Function to save image
     const saveImage = (photo) => {
         const exists = savedImages.some(img => img.img_src === photo.img_src);
         if (exists) {
@@ -513,4 +516,5 @@ document.addEventListener('DOMContentLoaded', function () {
         const errorMessageModal = new bootstrap.Modal(document.getElementById("errorMessageModal"));
         errorMessageModal.show();
     }
-});
+})
+;
