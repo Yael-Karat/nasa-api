@@ -517,5 +517,4 @@ document.addEventListener('DOMContentLoaded', function () {
         const errorMessageModal = new bootstrap.Modal(document.getElementById("errorMessageModal"));
         errorMessageModal.show();
     }
-})
-;
+});
