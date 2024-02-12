@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const API_KEY = "8DWkvDy8fbVdx7mQKq8AqHKCCUc7bqnFHGY92v1s";
     const baseUrl = "https://api.nasa.gov/mars-photos/api/v1/";
     const MAX_IMAGES = 15;
+    let isSavedImagesPage = false; // Variable to track if the current page is the saved images page
 
     resetForm();
 
@@ -329,6 +330,127 @@ document.addEventListener('DOMContentLoaded', function () {
     // Call showBackToSearchButton function on page load
     showBackToSearchButton();
 
+    // Event listener for clicking on the save button of images displayed in search results
+    document.getElementById('searchResults').addEventListener('click', function (event) {
+        if (event.target.classList.contains('save-button')) {
+            const index = event.target.dataset.index;
+            const photos = JSON.parse(localStorage.getItem('savedImages')) || [];
+            const photo = photos.find((item, i) => i === parseInt(index));
+            if (photo) {
+                saveImage(photo);
+                updateSavedImagesList();
+            }
+        }
+    });
+
+    // Event listener for clicking on the delete button in the saved images list
+    document.getElementById('savedImagesList').addEventListener('click', function (event) {
+        if (event.target.classList.contains('delete-button')) {
+            const index = event.target.dataset.index;
+            const photos = JSON.parse(localStorage.getItem('savedImages')) || [];
+            photos.splice(index, 1);
+            localStorage.setItem('savedImages', JSON.stringify(photos));
+            updateSavedImagesList();
+        }
+    });
+
+    // Function to update the saved images list displayed in the menu
+    function updateSavedImagesList() {
+        const savedImages = JSON.parse(localStorage.getItem('savedImages')) || [];
+        const savedImagesList = document.getElementById('savedImagesList');
+        savedImagesList.innerHTML = ''; // Clear previous list
+
+        savedImages.forEach((photo, index) => {
+            const row = document.createElement('div');
+            row.classList.add('row', 'mb-2');
+            row.innerHTML = `
+                <div class="col">${photo.earth_date}</div>
+                <div class="col">${photo.camera.full_name}</div>
+                <div class="col"><button class="btn btn-danger btn-sm delete-button" data-index="${index}">Delete</button></div>
+            `;
+            savedImagesList.appendChild(row);
+        });
+
+        // Show carousel control buttons if there are saved images
+        const carouselControls = document.getElementById('carouselControls');
+        if (savedImages.length > 0) {
+            carouselControls.style.display = 'block';
+        } else {
+            carouselControls.style.display = 'none';
+        }
+    }
+
+    // Call updateSavedImagesList function on page load
+    updateSavedImagesList();
+
+    // Function to create carousel from saved images
+    function createCarousel() {
+        const savedImages = document.querySelectorAll('#savedImagesList img');
+        const carouselInner = document.querySelector('.carousel-inner');
+        carouselInner.innerHTML = ''; // Clear previous carousel items
+        savedImages.forEach((img, index) => {
+            const carouselItem = document.createElement('div');
+            carouselItem.className = 'carousel-item';
+            if (index === 0) {
+                carouselItem.classList.add('active');
+            }
+            const imageContainer = document.createElement('div');
+            imageContainer.className = 'd-flex justify-content-center';
+            imageContainer.appendChild(img.cloneNode(true));
+            carouselItem.appendChild(imageContainer);
+            carouselInner.appendChild(carouselItem);
+        });
+        $('#carouselFade').carousel(); // Initialize carousel
+    }
+
+    // Create carousel from saved images on page load
+    createCarousel();
+
+    function showSavedImagesPage() {
+        // Show saved images content
+        document.getElementById('savedImagesContent').style.display = 'block';
+
+        // Show carousel control buttons
+        document.getElementById('carouselControls').style.display = 'block';
+    }
+
+    function hideSavedImagesPage() {
+        // Hide saved images content
+        document.getElementById('savedImagesContent').style.display = 'none';
+
+        // Hide carousel control buttons
+        document.getElementById('carouselControls').style.display = 'none';
+    }
+
+    // Event listener for clicking on "Saved Images" button in the menu
+    document.querySelector('.nav-link[href="#"]').addEventListener('click', function () {
+        showSavedImagesPage();
+    });
+
+    // Event listener for clicking on "Back to Search" button
+    document.getElementById('backToSearchButton').addEventListener('click', function () {
+        hideSavedImagesPage();
+    });
+
+    // Event listener for carousel start button
+    document.getElementById('carouselStartButton').addEventListener('click', function () {
+        $('#carouselFade').carousel('cycle');
+    });
+
+    // Event listener for carousel stop button
+    document.getElementById('carouselStopButton').addEventListener('click', function () {
+        $('#carouselFade').carousel('pause');
+    });
+
+    // Function to update saved images list and carousel
+    function updateSavedImages() {
+        updateSavedImagesList();
+        createCarousel();
+    }
+
+    // Call updateSavedImages function on page load
+    updateSavedImages();
+
     function saveImage(photo) {
         const savedImages = JSON.parse(localStorage.getItem('savedImages')) || [];
         const exists = savedImages.some(img => img.img_src === photo.img_src);
@@ -338,15 +460,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         savedImages.push(photo);
         localStorage.setItem('savedImages', JSON.stringify(savedImages));
-        // Display a dynamic message indicating the image has been saved
-        const messageContainer = document.createElement("div");
-        messageContainer.className = "alert alert-success mt-3";
-        messageContainer.textContent = "Image saved successfully!";
-        document.getElementById("searchResults").appendChild(messageContainer);
-        // Automatically remove the message after 3 seconds
-        setTimeout(() => {
-            messageContainer.remove();
-        }, 5000);
+        updateCarousel(savedImages); // Update the carousel with the saved images
     }
 
     function openFullSize(imgSrc) {
