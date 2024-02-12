@@ -298,9 +298,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (photos[index].sol) {
                 dateDetails += `<p><strong>Mars Date (Sol):</strong> ${photos[index].sol}</p>`;
             }
-            details.innerHTML = dateDetails +
-                `<p><strong>Rover:</strong> ${photos[index].rover.name}</p>` +
-                `<p><strong>Camera:</strong> ${photos[index].camera.full_name}</p>`;
+            details.innerHTML = dateDetails + `<p><strong>Rover:</strong> ${photos[index].rover.name}</p>` + `<p><strong>Camera:</strong> ${photos[index].camera.full_name}</p>`;
 
             // Create save button
             const saveButton = document.createElement("button");
@@ -404,25 +402,25 @@ document.addEventListener('DOMContentLoaded', function () {
      * Parameters: event (Event object): The event object representing the click event.
      * Returns: None.
      */
-    // Function to handle search result click
+        // Function to handle search result click
     const handleSearchResultClick = (event) => {
-        if (event.target.classList.contains('save-button')) {
-            // Event listener for clicking on "Saved Images" button in the menu
-            document.querySelector('.nav-link[href="#"]').addEventListener('click', function () {
-                // Hide search form and related text
-                document.getElementById('imagesSearchForm').style.display = 'none';
+            if (event.target.classList.contains('save-button')) {
+                // Event listener for clicking on "Saved Images" button in the menu
+                document.querySelector('.nav-link[href="#"]').addEventListener('click', function () {
+                    // Hide search form and related text
+                    document.getElementById('imagesSearchForm').style.display = 'none';
 
-                // Show saved images content
-                document.getElementById('savedImagesContent').style.display = 'block';
+                    // Show saved images content
+                    document.getElementById('savedImagesContent').style.display = 'block';
 
-                // Show "Back to Search" button
-                document.getElementById('backToSearchButton').style.display = 'block';
-            });
+                    // Show "Back to Search" button
+                    document.getElementById('backToSearchButton').style.display = 'block';
+                });
 
-            const index = event.target.dataset.index;
-            saveImage(photos[index]);
-        }
-    };
+                const index = event.target.dataset.index;
+                saveImage(photos[index]);
+            }
+        };
 
     // Event listener for clicking on the save button of images displayed in search results
     document.getElementById('searchResults').addEventListener('click', handleSearchResultClick);
@@ -524,7 +522,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Event listener for clicking on "Home" button using event delegation
-    document.body.addEventListener('click', function(event) {
+    document.body.addEventListener('click', function (event) {
         if (event.target.closest('.nav-link[data-target="#home"]')) {
             const imagesSearchForm = document.getElementById("imagesSearchForm");
             const savedImagesContent = document.getElementById("savedImagesContent");
@@ -579,9 +577,11 @@ document.addEventListener('DOMContentLoaded', function () {
      * Returns: None.
      */
     const saveImage = (photo) => {
-        const exists = savedImages.some(img => img.img_src === photo.img_src);
+        const exists = savedImages.some(img => img.id === photo.id); // Compare by id
+        const id = photo.id;
+
         if (exists) {
-            showError("This image has already been saved.");
+            showErrorForSavedImage("This image has already been saved.", id);
             return;
         } else {
             savedImages.push(photo);
@@ -639,5 +639,30 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById("errorMessageBody").innerHTML = message;
         const errorMessageModal = new bootstrap.Modal(document.getElementById("errorMessageModal"));
         errorMessageModal.show();
+    }
+
+    /**
+     * Purpose: Displays an error message using Bootstrap modal.
+     * Parameters: message (string): The error message to be displayed and id (string): The ID of the saved image associated with the error.
+     * Returns: None.
+     */
+    function showErrorForSavedImage(message, id) {
+        // Append error message using Bootstrap modal
+        const errorMessageBody = document.getElementById("errorMessageBody");
+        errorMessageBody.innerHTML += `<div>${message} ID: ${id}</div>`;
+        const errorMessageModal = new bootstrap.Modal(document.getElementById("errorMessageModal"));
+
+        document.querySelector("#errorMessageModal .modal-footer").innerHTML = `
+        <button type="button" class="btn btn-primary" id="errorMessageOKButton">OK</button>
+    `;
+        // Show the modal
+        errorMessageModal.show();
+
+        // Add event listener to the OK button to close the modal
+        document.getElementById("errorMessageOKButton").addEventListener("click", () => {
+            errorMessageModal.hide();
+            // Clear error messages after closing the modal
+            errorMessageBody.innerHTML = '';
+        });
     }
 });
