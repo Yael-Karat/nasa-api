@@ -295,14 +295,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Event listener for clicking on "Back to Search" button
     document.getElementById('backToSearchButton').addEventListener('click', function () {
-        // Show search form and related text
-        document.getElementById('imagesSearchForm').style.display = 'block';
-
-        // Hide saved images content
-        document.getElementById('savedImagesContent').style.display = 'none';
-
-        // Hide "Back to Search" button
-        this.style.display = 'none';
+        const imagesSearchForm = document.getElementById("imagesSearchForm");
+        const savedImagesContent = document.getElementById("savedImagesContent");
+        imagesSearchForm.style.display = "block"; // Show search form
+        savedImagesContent.style.display = 'none'; // Hide saved images content
     });
 
     // Function to show "Back to Search" button when necessary
