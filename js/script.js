@@ -301,19 +301,6 @@ document.addEventListener('DOMContentLoaded', function () {
         savedImagesContent.style.display = 'none'; // Hide saved images content
     });
 
-    // Function to show "Back to Search" button when necessary
-    function showBackToSearchButton() {
-        // Show "Back to Search" button if saved images content is hidden
-        if (document.getElementById('savedImagesContent').style.display === 'none') {
-            document.getElementById('backToSearchButton').style.display = 'block';
-        } else {
-            document.getElementById('backToSearchButton').style.display = 'none'; // Hide button if saved images content is shown
-        }
-    }
-
-    // Call showBackToSearchButton function on page load
-    showBackToSearchButton();
-
     // Event listener for clicking on the save button of images displayed in search results
     document.getElementById('searchResults').addEventListener('click', function (event) {
         if (event.target.classList.contains('save-button')) {
