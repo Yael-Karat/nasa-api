@@ -8,11 +8,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     resetForm();
 
-    // Add loaded class to hide loading buffer when content is loaded
-    window.addEventListener('load', function () {
-        document.getElementById('loadingBuffer').classList.add('loaded');
-    });
-
     // Event listener for changing date format
     document.getElementById('selectDateFormat').addEventListener('change', function () {
         const regularDateBox = document.getElementById('regularDateBox');
@@ -37,6 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Set min and max attributes of the inputDate element
                 document.getElementById("inputDate").setAttribute("min", minEarthDate);
                 document.getElementById("inputDate").setAttribute("max", maxEarthDate);
+                document.getElementById('loadingBuffer').classList.add('loaded');
             })
             .catch(error => {
                 showError("Error fetching cameras data. Please try again.")
@@ -317,11 +313,17 @@ document.addEventListener('DOMContentLoaded', function () {
     // Event listener for clicking on the delete button in the saved images list
     document.getElementById('savedImagesList').addEventListener('click', function (event) {
         if (event.target.classList.contains('delete-button')) {
-            const index = event.target.dataset.index;
-            const photos = JSON.parse(localStorage.getItem('savedImages')) || [];
-            photos.splice(index, 1);
-            localStorage.setItem('savedImages', JSON.stringify(photos));
-            updateSavedImagesList();
+            const index = parseInt(event.target.dataset.index); // Parse index as an integer
+            let photos = JSON.parse(localStorage.getItem('savedImages')) || [];
+
+            // Check if the index is valid
+            if (index >= 0 && index < photos.length) {
+                photos.splice(index, 1); // Remove the image at the specified index
+                localStorage.setItem('savedImages', JSON.stringify(photos)); // Update storage
+                updateSavedImagesList();
+            } else {
+                showError('Invalid index:', index);
+            }
         }
     });
 
@@ -413,12 +415,14 @@ document.addEventListener('DOMContentLoaded', function () {
     function updateSavedImages() {
         // Update saved images list
         updateSavedImagesList();
-        // Update carousel
-        createCarousel();
     }
 
     // Function to start the carousel
     function startCarousel() {
+        document.getElementById('carouselExampleFade').style.display = 'block';
+        // Update carousel
+        createCarousel();
+
         $('.carousel').carousel('cycle');
     }
 
@@ -442,16 +446,24 @@ document.addEventListener('DOMContentLoaded', function () {
     // Update saved images and carousel on page load
     updateSavedImages();
 
+    // Attach event listener for the carousel start button
+    document.getElementById('carouselStopButton').addEventListener('click', function () {
+        document.getElementById('carouselExampleFade').style.display = 'none';
+    });
+
     // Event listener for clicking on "Home" button
     document.querySelector('.nav-link[data-target="#home"]').addEventListener('click', function () {
-        // Reset the search form
-        resetForm();
-
-        // Hide saved images content
-        document.getElementById('savedImagesContent').style.display = 'none';
+        const imagesSearchForm = document.getElementById("imagesSearchForm");
+        const savedImagesContent = document.getElementById("savedImagesContent");
 
         // Show the search form
-        document.getElementById('imagesSearchForm').style.display = 'block';
+        imagesSearchForm.style.display = 'block';
+
+        // Hide saved images content
+        savedImagesContent.style.display = 'none';
+
+        // Hide carousel controls if needed
+        document.getElementById('carouselControls').style.display = 'none';
     });
 
     // Event listener for clicking on "Saved Images" button in the menu
@@ -485,6 +497,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const exists = savedImages.some(img => img.img_src === photo.img_src);
         if (exists) {
             showError("This image has already been saved.");
+            return;
         } else {
             savedImages.push(photo);
             localStorage.setItem('savedImages', JSON.stringify(savedImages));
