@@ -431,7 +431,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Event listener for clicking on "Saved Images" button in the menu
-    document.querySelector('.nav-link[href="#"]').addEventListener('click', function () {
+    document.querySelector('.nav-link[data-target="#savedImages"]').addEventListener('click', function () {
         showSavedImagesPage();
         updateSavedImages(); // Update saved images and carousel
     });
