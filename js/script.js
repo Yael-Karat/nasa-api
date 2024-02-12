@@ -335,6 +335,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const row = document.createElement('div');
             row.classList.add('row', 'mb-2');
             row.innerHTML = `
+            <div class="col">Id Image: ${photo.id}</div>
             <div class="col">Earth Date: ${photo.earth_date}</div>
             <div class="col">Sol: ${photo.sol}</div>
             <div class="col">Camera: ${photo.camera.name}</div>
@@ -375,34 +376,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // Event listener for clicking on the save button of images displayed in search results
     document.getElementById('searchResults').addEventListener('click', handleSearchResultClick);
 
-    // Function to create carousel from saved images
-    function createCarousel() {
-        const savedImages = document.querySelectorAll('#savedImagesList img');
-        const carouselInner = document.querySelector('.carousel-inner');
-        carouselInner.innerHTML = ''; // Clear previous carousel items
-        savedImages.forEach((img, index) => {
-            const carouselItem = document.createElement('div');
-            carouselItem.className = 'carousel-item';
-            if (index === 0) {
-                carouselItem.classList.add('active');
-            }
-            const imageContainer = document.createElement('div');
-            imageContainer.className = 'd-flex justify-content-center';
-            imageContainer.appendChild(img.cloneNode(true));
-            carouselItem.appendChild(imageContainer);
-            carouselInner.appendChild(carouselItem);
-        });
-        $('#carouselFade').carousel(); // Initialize carousel
-    }
-
-    function showSavedImagesPage() {
-        // Show saved images content
-        document.getElementById('savedImagesContent').style.display = 'block';
-
-        // Show carousel control buttons
-        document.getElementById('carouselControls').style.display = 'block';
-    }
-
     function hideSavedImagesPage() {
         // Hide saved images content
         document.getElementById('savedImagesContent').style.display = 'none';
@@ -411,36 +384,90 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('carouselControls').style.display = 'none';
     }
 
+    // Function to create carousel from saved images
+    function createCarousel() {
+        const carouselInner = document.querySelector('.carousel-inner');
+        carouselInner.innerHTML = ''; // Clear previous carousel items
+
+        savedImages.forEach((photo, index) => {
+            const carouselItem = document.createElement('div');
+            carouselItem.className = 'carousel-item';
+            if (index === 0) {
+                carouselItem.classList.add('active');
+            }
+            const imageContainer = document.createElement('div');
+            imageContainer.className = 'd-flex justify-content-center';
+
+            // Create image element
+            const img = document.createElement("img");
+            img.src = photo.img_src;
+            img.alt = "Mars Rover Image";
+
+            imageContainer.appendChild(img);
+            carouselItem.appendChild(imageContainer);
+            carouselInner.appendChild(carouselItem);
+        });
+    }
+
+    // Function to update the saved images list and carousel
+    function updateSavedImages() {
+        // Update saved images list
+        updateSavedImagesList();
+        // Update carousel
+        createCarousel();
+    }
+
+    // Function to start the carousel
+    function startCarousel() {
+        $('.carousel').carousel('cycle');
+    }
+
+    // Function to show saved images page
+    function showSavedImagesPage() {
+        // Show saved images content
+        document.getElementById('savedImagesContent').style.display = 'block';
+        // Show carousel control buttons
+        document.getElementById('carouselControls').style.display = 'block';
+    }
+
     // Event listener for clicking on "Saved Images" button in the menu
     document.querySelector('.nav-link[href="#"]').addEventListener('click', function () {
+        showSavedImagesPage();
+        updateSavedImages(); // Update saved images and carousel
+    });
+
+    // Attach event listener for the carousel start button
+    document.getElementById('carouselStartButton').addEventListener('click', startCarousel);
+
+    // Update saved images and carousel on page load
+    updateSavedImages();
+
+    // Event listener for clicking on "Home" button
+    document.querySelector('.nav-link[data-target="#home"]').addEventListener('click', function () {
+        // Reset the search form
+        resetForm();
+
+        // Hide saved images content
+        document.getElementById('savedImagesContent').style.display = 'none';
+
+        // Show the search form
+        document.getElementById('imagesSearchForm').style.display = 'block';
+    });
+
+    // Event listener for clicking on "Saved Images" button in the menu
+    document.querySelector('.nav-link[data-target="#savedImages"]').addEventListener('click', function () {
         const imagesSearchForm = document.getElementById("imagesSearchForm");
         imagesSearchForm.style.display = "none";
 
         showSavedImagesPage();
     });
 
-// Event listener for clicking on "Back to Search" button
+    // Event listener for clicking on "Back to Search" button
     document.getElementById('backToSearchButton').addEventListener('click', function () {
         hideSavedImagesPage();
     });
 
-// Event listener for carousel start button
-    document.getElementById('carouselStartButton').addEventListener('click', function () {
-        $('#carouselFade').carousel('cycle');
-    });
-
-// Event listener for carousel stop button
-    document.getElementById('carouselStopButton').addEventListener('click', function () {
-        $('#carouselFade').carousel('pause');
-    });
-
-// Function to update saved images list and carousel
-    function updateSavedImages() {
-        updateSavedImagesList();
-        createCarousel();
-    }
-
-// Function to display a message for a specified duration
+    // Function to display a message for a specified duration
     const displayMessage = (message, duration) => {
         const messageElement = document.createElement('div');
         messageElement.className = 'alert alert-success';
@@ -453,7 +480,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }, duration);
     };
 
-// Function to save image
+    // Function to save image
     const saveImage = (photo) => {
         const exists = savedImages.some(img => img.img_src === photo.img_src);
         if (exists) {
@@ -462,7 +489,7 @@ document.addEventListener('DOMContentLoaded', function () {
             savedImages.push(photo);
             localStorage.setItem('savedImages', JSON.stringify(savedImages));
             updateSavedImagesList();
-            displayMessage("The image has been successfully saved.", 5000);
+            displayMessage("The image has been successfully saved.", 3000);
         }
     };
 
