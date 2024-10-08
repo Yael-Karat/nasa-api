@@ -1,4 +1,4 @@
-# NASA Rover Images Viewer
+# <img src="https://github.com/user-attachments/assets/5d03bfdd-0ebd-4210-9058-44e7934d16f7" alt="NASA Aircraft GIF" style="width: 100px; height: auto;"> NASA Rover Images Viewer
 Welcome to the NASA Rover Images Viewer!
 This project is a web application that interacts with the NASA API to fetch and display images taken by Mars rovers.
 Users can search for images by selecting a rover, specifying a date, and choosing a camera.
